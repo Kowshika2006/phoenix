@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Phoenix Club</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;900&display=swap');
+
+    :root {
+      --primary-orange: #ff6b35;
+      --primary-gold: #ffa500;
+      --accent-fire: #ff4500;
+      --dark-bg: #0a0f1a;
+      --card-bg: #1a1f2e;
+      --text-primary: #ffffff;
+      --text-secondary: #d4af37;
+      --gradient-main: linear-gradient(135deg, #ff6b35 0%, #ffa500 50%, #ff4500 100%);
+      --gradient-accent: linear-gradient(45deg, #ff6b35, #ffa500, #ff4500);
+      --shadow-fire: 0 0 30px rgba(255, 107, 53, 0.4);
+      --shadow-deep: 0 10px 30px rgba(255, 69, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0a0f1a 0%, #1a1f2e 50%, #0f1419 100%);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, #ffa500, transparent),
+        radial-gradient(2px 2px at 40px 70px, #ff6b35, transparent),
+        radial-gradient(1px 1px at 90px 40px, #ff4500, transparent),
+        radial-gradient(1px 1px at 130px 80px, #ffd700, transparent),
+        radial-gradient(2px 2px at 160px 30px, #ff8c42, transparent);
+      background-size: 200px 100px;
+      background-repeat: repeat;
+      opacity: 0.1;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--dark-bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--gradient-accent);
+      border-radius: 4px;
+    }
+
+    /* Animated Background Particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: radial-gradient(circle, #ffa500, #ff6b35);
+      border-radius: 50%;
+      box-shadow: 0 0 6px #ff6b35;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+      25% { transform: translateY(-15px) rotate(90deg); opacity: 0.8; }
+      50% { transform: translateY(-30px) rotate(180deg); opacity: 1; }
+      75% { transform: translateY(-15px) rotate(270deg); opacity: 0.8; }
+    }
+
+    /* Hero Video Section */
+    .hero-video {
+      height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-video video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -2;
+      filter: brightness(0.4) contrast(1.2);
+    }
+
+    .hero-video::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, rgba(255, 107, 53, 0.2), rgba(255, 165, 0, 0.2), rgba(255, 69, 0, 0.1));
+      z-index: -1;
+    }
+
+    .hero-content {
+      text-align: center;
+      z-index: 10;
+      animation: heroFadeIn 2s ease-out;
+    }
+
+    @keyframes heroFadeIn {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 3rem;
+      background: rgba(26, 31, 46, 0.95);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(255, 107, 53, 0.2);
+      z-index: 1000;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .header-scrolled {
+      padding: 0.5rem 3rem;
+      box-shadow: var(--shadow-fire);
+      border-bottom-color: var(--primary-orange);
+    }
+
+    .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 500;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+    }
+
+    .logo::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient-accent);
+      transition: width 0.3s ease;
+    }
+
+    .logo:hover::after {
+      width: 100%;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    nav a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      position: relative;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+    }
+
+    nav a::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--gradient-accent);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    nav a:hover::before {
+      width: 80%;
+    }
+
+    nav a:hover {
+      color: var(--primary-gold);
+      background: rgba(255, 107, 53, 0.1);
+      text-shadow: 0 0 10px rgba(255, 165, 0, 0.6);
+    }
+
+    /* Sections */
+    section {
+      padding: 6rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    section:nth-child(even) {
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.08), rgba(255, 165, 0, 0.05), rgba(255, 69, 0, 0.08));
+      margin: 4rem auto;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 107, 53, 0.2);
+    }
+
+    h2 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: var(--gradient-accent);
+      border-radius: 2px;
+    }
+
+    .section-title {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    /* Vision Section - Enhanced Centering */
+    #vision {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    #vision .section-title {
+      margin-bottom: 3rem;
+    }
+
+    #vision p {
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto 2.5rem;
+    }
+
+    /* Events Section */
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .event-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .event-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .event-card:hover::before {
+      left: 100%;
+    }
+
+    .event-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-fire);
+      border-color: var(--primary-orange);
+    }
+
+    .event-icon {
+      font-size: 2.5rem;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+
+    .event-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .event-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Team Section - Enhanced Centering */
+    #team {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .team-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      width: 100%;
+    }
+
+    .team-category {
+      margin-bottom: 4rem;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .team-category h3 {
+      font-size: 1.8rem;
+      color: var(--primary-gold);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 600;
+      width: 100%;
+    }
+
+    .team-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    /* Alternative grid approach for better centering */
+    @media (min-width: 768px) {
+      .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
+        gap: 2rem;
+        justify-content: center;
+        place-items: center;
+      }
+    }
+
+    .team-member {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      max-width: 300px;
+      min-width: 250px;
+    }
+
+    .team-member::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, transparent, var(--primary-orange), var(--primary-gold), transparent);
+      animation: rotate 4s linear infinite;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .team-member:hover::before {
+      opacity: 0.1;
+    }
+
+    @keyframes rotate {
+      100% { transform: rotate(360deg); }
+    }
+
+    .team-member:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: var(--shadow-fire);
+    }
+
+    .team-member h4 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+      z-index: 2;
+      position: relative;
+    }
+
+    .team-member p {
+      color: var(--primary-gold);
+      font-weight: 500;
+      font-size: 0.9rem;
+      z-index: 2;
+      position: relative;
+      margin: 0;
+    }
+
+    /* Contact Section */
+    .contact-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .contact-info {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .contact-item:hover {
+      background: rgba(255, 107, 53, 0.1);
+    }
+
+    .contact-item i {
+      font-size: 1.2rem;
+      color: var(--primary-gold);
+      margin-right: 1rem;
+      width: 20px;
+    }
+
+    .contact-form {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary-orange);
+      box-shadow: 0 0 15px rgba(255, 107, 53, 0.4);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      background: var(--gradient-accent);
+      border: none;
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .submit-btn:hover::before {
+      left: 100%;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-fire);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      nav ul {
+        gap: 1rem;
+      }
+
+      .contact-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      section {
+        padding: 3rem 1rem;
+      }
+
+      .team-grid {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .team-member {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+
+    /* Loading Animation */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--dark-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      animation: fadeOut 1s 2s forwards;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 107, 53, 0.3);
+      border-top: 3px solid var(--primary-orange);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div class="loading">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Animated Background Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Header -->
+  <header id="header">
+    <div class="logo">Phoenix Club</div>
+    <nav>
+      <ul>
+        <li><a href="#mission"><i class="fas fa-rocket"></i> Mission</a></li>
+        <li><a href="#vision"><i class="fas fa-eye"></i> Vision</a></li>
+        <li><a href="#events"><i class="fas fa-calendar-alt"></i> Events</a></li>
+        <li><a href="#team"><i class="fas fa-users"></i> Team</a></li>
+        <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Video Section -->
+  <div class="hero-video" id="home">
+    <video autoplay muted loop>
+      <source src="super.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    
+    <div class="hero-content">
+    </div>
+  </div>
+
+  <!-- Mission Section -->
+  <section id="mission">
+    <h2 class="section-title">Our Mission</h2>
+    <p>
+      To cultivate an inclusive learning ecosystem where knowledge flows freely, fostering collaborative innovation 
+      and peer-to-peer growth, with a focus on hands-on learning and mentorship that transforms curiosity into expertise.
+    </p>
+  </section>
+
+  <!-- Vision Section -->
+  <section id="vision">
+    <h2 class="section-title">Vision & Identity</h2>
+    <p>
+      To be a catalyst for transformative learning in AI and emerging technologies, empowering a community of leaders 
+      and innovators who shape the future through continuous learning and collaborative excellence.
+    </p>
+    <p>
+      The Phoenix Club's identity embodies a "galactic phoenix of knowledge," rising from traditional learning methods 
+      to create an environment that values and nurtures an insatiable passion for learning and innovation.
+    </p>
+  </section>
+
+  <!-- Events Section -->
+  <section id="events">
+    <h2 class="section-title">Events & Services</h2>
+    <div class="events-grid">
+      <div class="event-card">
+        <i class="fas fa-chalkboard-teacher event-icon"></i>
+        <h3 class="event-title">Expert Webinars</h3>
+        <p class="event-description">Industry leaders share cutting-edge insights on technology, innovation, and emerging trends.</p>
+      </div>
+      <div class="event-card">
+        <i class="fas fa-tools event-icon"></i>
+        <h3 class="event-title">Hands-on Workshops</h3>
+        <p class="event-description">Interactive, project-based sessions that transform theoretical knowledge into practical skills.</p>
+      </div>
+      <div class="event-card">
+        <i class="fas fa-robot event-icon"></i>
+        <h3 class="event-title">AI Deep Dives</h3>
+        <p class="event-description">Comprehensive exploration of AI and other emerging technologies with real-world applications.</p>
+      </div>
+      <div class="event-card">
+        <i class="fas fa-presentation event-icon"></i>
+        <h3 class="event-title">Project Showcases</h3>
+        <p class="event-description">Platform for members to demonstrate innovations and receive constructive feedback.</p>
+      </div>
+      <div class="event-card">
+        <i class="fas fa-share-alt event-icon"></i>
+        <h3 class="event-title">Knowledge Sharing</h3>
+        <p class="event-description">Regular insights connecting academic learning with industry practices through various channels.</p>
+      </div>
+      <div class="event-card">
+        <i class="fas fa-chart-line event-icon"></i>
+        <h3 class="event-title">Efficiency Training</h3>
+        <p class="event-description">Advanced tools and techniques to optimize workflow, productivity, and professional growth.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section id="team">
+    <div class="team-header">
+      <h2 class="section-title">Meet Our Team</h2>
+      <p>The brilliant minds driving innovation and excellence at Phoenix Club</p>
+    </div>
+
+    <div class="team-category">
+      <h3>Executive Board</h3>
+      <div class="team-grid">
+        <div class="team-member">
+          <h4>Devesh D</h4>
+          <p>President</p>
+        </div>
+        <div class="team-member">
+          <h4>Harish M</h4>
+          <p>Vice President</p>
+        </div>
+        <div class="team-member">
+          <h4>Harish T</h4>
+          <p>Secretary</p>
+        </div>
+        <div class="team-member">
+          <h4>Vishnu Priya C S</h4>
+          <p>Joint Secretary</p>
+        </div>
+        <div class="team-member">
+          <h4>Ishana Sabarish</h4>
+          <p>Human Resources</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="team-category">
+      <h3>Technical Leadership</h3>
+      <div class="team-grid">
+        <div class="team-member">
+          <h4>Harish Kumar V</h4>
+          <p>Event Team Head</p>
+        </div>
+        <div class="team-member">
+          <h4>Afrah M</h4>
+          <p>Tech Team Lead</p>
+        </div>
+        <div class="team-member">
+          <h4>Avishikar Kannan</h4>
+          <p>Tech Team Lead</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="team-category">
+      <h3>Creative & Outreach</h3>
+      <div class="team-grid">
+        <div class="team-member">
+          <h4>Dharshini VL</h4>
+          <p>PR Lead</p>
+        </div>
+        <div class="team-member">
+          <h4>Swathi E</h4>
+          <p>PR Lead</p>
+        </div>
+        <div class="team-member">
+          <h4>Tarun AD</h4>
+          <p>Design Head</p>
+        </div>
+        <div class="team-member">
+          <h4>Vijay</h4>
+          <p>Design Head</p>
+        </div>
+        <div class="team-member">
+          <h4>Benin</h4>
+          <p>Video Head</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <h2 class="section-title">Get In Touch</h2>
+    <div class="contact-container">
+      <div class="contact-info">
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <div>
+            <strong>Email</strong><br>
+            phoenix@example.com
+          </div>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-phone"></i>
+          <div>
+            <strong>Phone</strong><br>
+            +91 98765 43210
+          </div>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <div>
+            <strong>Location</strong><br>
+            Chennai, Tamil Nadu, India
+          </div>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-clock"></i>
+          <div>
+            <strong>Hours</strong><br>
+            Monday - Friday, 9:00 AM - 6:00 PM
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form">
+        <form>
+          <div class="form-group">
+            <input type="text" name="name" placeholder="Your Name" required />
+          </div>
+          <div class="form-group">
+            <input type="email" name="email" placeholder="Your Email" required />
+          </div>
+          <div class="form-group">
+            <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Create animated particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 50;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('header');
+      if (window.scrollY > 100) {
+        header.classList.add('header-scrolled');
+      } else {
+        header.classList.remove('header-scrolled');
+      }
+    });
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Initialize particles when page loads
+    window.addEventListener('load', () => {
+      createParticles();
+    });
+
+    // Form submission animation
+    document.querySelector('.contact-form form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = this.querySelector('.submit-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+      
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-check"></i> Message Sent!';
+        btn.style.background = 'linear-gradient(135deg, #00ff88, #00aa55)';
+        
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = 'var(--gradient-accent)';
+          this.reset();
+        }, 2000);
+      }, 1500);
+    });
+  </script>
+
+</body>
+</html>
